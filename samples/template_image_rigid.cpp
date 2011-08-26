@@ -81,9 +81,9 @@ po::value<string>(&opts.focal_ratio)->default_value("0.0"),
 "verbosity, how much to display crap. between 0 and 3.")(
 "waittime,W", po::value<int>(&opts.waitKeyLength)->default_value(5),
 "number of milliseconds to wait on display (needs to be higher if running from matlab for example)")(
-"lambdaT,A", po::value<string>(&opts.lambdaT)->default_value("0.1"),
+"lambdaT,A", po::value<string>(&opts.lambdaT)->default_value("0.5"),
 "T regularizer weight")(
-"lambdaW,R", po::value<string>(&opts.lambdaW)->default_value("0.1"),
+"lambdaW,R", po::value<string>(&opts.lambdaW)->default_value("0.5"),
 "W regularizer weight")(
 "alphaIO,C", po::value<string>(&opts.alphaIO)->default_value("0.1"),
 "chan-vese-like weight, in/out disparity")(
@@ -174,10 +174,6 @@ public:
     Mat outimg = warped_template.clone();
     outimg.convertTo(outimg,CV_8UC3);
     
-    for( int i=1;i<=2;i++) {
-//     T_est_float.at<float>(i) *= -1.0;
-//     w_est_float.at<float>(i) *= -1.0;
-    }
     T_est_float.at<float>(2) +=  1.0;
     poseDrawer(outimg, K, w_est_float, T_est_float,"",input_opts.lineThick);
     imwrite( warpname, outimg );
@@ -264,10 +260,7 @@ public:
   
   void applyPerspectiveWarp( )
   {
-    for( int i=1;i<=2;i++) {
-//     T_est.at<double>(i) *= -1.0;
-//     w_est.at<double>(i) *= -1.0;
-    }
+
     T_est.convertTo(T_est_float,CV_32F);
     w_est.convertTo(w_est_float,CV_32F);
     Rodrigues(w_est_float, R_est); //get a rotation matrix
@@ -580,9 +573,11 @@ int main(int argc, char** argv) {
   printBodyCount(opt_core);
   RigidTransformFitter::write_RT_to_csv( opts.x_out_final, optimal_W_and_T );
 
-  RT->restoreOriginalInput();
-  RT->writeImageCallback(opts.out_warp_img);
-  waitKey(5);
+  if( opts.verbosity > 0 )   {
+    RT->restoreOriginalInput();
+    RT->writeImageCallback(opts.out_warp_img);
+    waitKey(5); //hazard if writing isn't finalized and matlab tries to read it
+  }
   cout << "DONE." << endl;
   return 0;
   

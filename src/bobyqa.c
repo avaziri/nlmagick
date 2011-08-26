@@ -2580,6 +2580,7 @@ L360:
     if (rc != NLOPT_SUCCESS) goto L720;
 
     stop->nevals++;
+    /** ENTRY POINT TO F_EVAL CALLBACK !!! */
     f = calfun(*n, &x[1], calfun_data);
     if (ntrits == -1) {
 	fsave = f;
