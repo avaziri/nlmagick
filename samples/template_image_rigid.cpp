@@ -367,7 +367,7 @@ public:
     // create border mask for display
     int borderSize = (int) ( mask_img.rows / 100.0 + 0.5 ); 
     borderSize    += ( borderSize % 2 == 0 );
-    borderSize     = std::max( 5, borderSize );
+    borderSize     = std::max( 3, borderSize );
     cv::Canny( mask_img, mask_border, 1, 2 );
     mask_border = mask_border * borderSize * 2;
     cv::GaussianBlur(mask_border.clone(), mask_border, Size(borderSize,borderSize),3.0,3.0);
@@ -573,7 +573,9 @@ int main(int argc, char** argv) {
   printBodyCount(opt_core);
   RigidTransformFitter::write_RT_to_csv( opts.x_out_final, optimal_W_and_T );
 
-  if( opts.verbosity > 0 )   {
+  if( (opts.out_warp_img.compare("warped.jpg") != 0)   // they set a -w flag
+      || (opts.verbosity > 0) )                        // or verbosity is on
+  {
     RT->restoreOriginalInput();
     RT->writeImageCallback(opts.out_warp_img);
     waitKey(5); //hazard if writing isn't finalized and matlab tries to read it
