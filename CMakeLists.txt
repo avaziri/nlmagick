@@ -4,7 +4,7 @@ project(nlmagick)
 enable_testing()
 
 # search for Boost version
-find_package( Boost COMPONENTS filesystem program_options )
+find_package( Boost COMPONENTS system filesystem program_options )
 
 link_directories ( ${Boost_LIBRARY_DIRS} )
 include_directories ( ${Boost_INCLUDE_DIRS} )
@@ -14,8 +14,8 @@ include_directories ( ${Boost_INCLUDE_DIRS} )
 #link time.
 set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wl,--no-undefined -fopenmp")
 
-#
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall  -Werror -Wl,--no-undefined -fopenmp")
+#   -Werror=unused-but-set-variable
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -Wall -Wl,--no-undefined -fopenmp")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DBOOST_DISABLE_ASSERTS")
 
 #set the default path for built executables to the "bin" directory

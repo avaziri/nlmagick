@@ -1,10 +1,10 @@
 macro(data_download PATH_VAR DATA_FILE SAVE_TO_PATH)
   set(data_base_url http://www.theveganrobot.com/nlmagick/data)
   set(${PATH_VAR} ${PROJECT_BINARY_DIR}/${SAVE_TO_PATH}/${DATA_FILE})
-  if(NOT EXISTS ${${PATH_VAR}})
-    message(STATUS "Data fetch.\n** Downloading:\n** ${data_base_url}/${DATA_FILE}\n** to:\n** ${${PATH_VAR}}")
-    file(DOWNLOAD ${data_base_url}/${DATA_FILE} ${${PATH_VAR}})
-  endif()
+# if(NOT EXISTS ${${PATH_VAR}})
+#    message(STATUS "Data fetch.\n** Downloading:\n** ${data_base_url}/${DATA_FILE}\n** to:\n** ${${PATH_VAR}}")
+#    file(DOWNLOAD ${data_base_url}/${DATA_FILE} ${${PATH_VAR}})
+ # endif()
 endmacro()
 
 
@@ -13,30 +13,31 @@ target_link_libraries(nlmagick_test_fmincon  nlmagick ${Boost_LIBRARIES})
 
 add_test(test_fmincon_A   ${CMAKE_BINARY_DIR}/bin/nlmagick_test_fmincon -x 20 -y 20 -m 10)
 
+if(FALSE)  # server might be broken !
+    # Rigid Image Match = 640x480
+    data_download(image_0000 image_0000.jpg data_rigid_template)
+    data_download(image_0001 image_0001.jpg data_rigid_template)
+    data_download(image_0002 image_0002.jpg data_rigid_template)
+    data_download(image_mask image_mask.jpg data_rigid_template)
 
-# Rigid Image Match = 640x480
-data_download(image_0000 image_0000.jpg data_rigid_template)
-data_download(image_0001 image_0001.jpg data_rigid_template)
-data_download(image_0002 image_0002.jpg data_rigid_template)
-data_download(image_mask image_mask.jpg data_rigid_template)
+    # 480x360 images
+    data_download(image_mask_Ax  image_mask_Ax.jpg data_rigid_template)
+    data_download(image_0000_Ax  image_0000_Ax.jpg data_rigid_template)
+    data_download(image_0001_Ax  image_0001_Ax.jpg data_rigid_template)
+    data_download(image_0002_Ax  image_0002_Ax.jpg data_rigid_template)
 
-# 480x360 images
-data_download(image_mask_Ax  image_mask_Ax.jpg data_rigid_template)
-data_download(image_0000_Ax  image_0000_Ax.jpg data_rigid_template)
-data_download(image_0001_Ax  image_0001_Ax.jpg data_rigid_template)
-data_download(image_0002_Ax  image_0002_Ax.jpg data_rigid_template)
+    # 320x240 images
+    data_download(image_mask_2x  image_mask_2x.jpg data_rigid_template)
+    data_download(image_0000_2x  image_0000_2x.jpg data_rigid_template)
+    data_download(image_0001_2x  image_0001_2x.jpg data_rigid_template)
+    data_download(image_0002_2x  image_0002_2x.jpg data_rigid_template)
 
-# 320x240 images
-data_download(image_mask_2x  image_mask_2x.jpg data_rigid_template)
-data_download(image_0000_2x  image_0000_2x.jpg data_rigid_template)
-data_download(image_0001_2x  image_0001_2x.jpg data_rigid_template)
-data_download(image_0002_2x  image_0002_2x.jpg data_rigid_template)
-
-# 160x120 images
-data_download(image_mask_3x  image_mask_3x.jpg data_rigid_template)
-data_download(image_0000_3x  image_0000_3x.jpg data_rigid_template)
-data_download(image_0001_3x  image_0001_3x.jpg data_rigid_template)
-data_download(image_0002_3x  image_0002_3x.jpg data_rigid_template)
+    # 160x120 images
+    data_download(image_mask_3x  image_mask_3x.jpg data_rigid_template)
+    data_download(image_0000_3x  image_0000_3x.jpg data_rigid_template)
+    data_download(image_0001_3x  image_0001_3x.jpg data_rigid_template)
+    data_download(image_0002_3x  image_0002_3x.jpg data_rigid_template)
+endif()
 
 add_test(test_image_rigid_LinuxFlag
     ${CMAKE_BINARY_DIR}/bin/template_image_rigid 
