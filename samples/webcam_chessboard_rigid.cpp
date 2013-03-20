@@ -194,6 +194,7 @@ int main(int argc, char** argv) {
     Mat D,K;
     Size Sz;
     readKfromCalib(K, D, Sz, opts.k_file);
+    D = 0.0 * D;
     Size board_size(opts.width, opts.height);
 
     cout << "testing nlopt ... " << endl;
@@ -203,8 +204,12 @@ int main(int argc, char** argv) {
     cout << "K = " << K << endl;
     cout << "board_points " << template_board << endl;
     vector<Point2f> imgpts;
-    projectPoints(Mat(template_board), Mat::zeros(3, 1, CV_32F), Mat::zeros(3,
-            1, CV_32F), K, Mat(), imgpts);
+    projectPoints(Mat(template_board),
+                  Mat::zeros(3, 1, CV_32F),
+                  Mat::zeros(3, 1, CV_32F),
+                  K,
+                  D,
+                  imgpts);
     cout << "image points " << imgpts << endl;
     Mat xyz1(template_board);
     xyz1 = xyz1.t();
@@ -271,7 +276,7 @@ int main(int argc, char** argv) {
             cv::Mat R;
             cv::Rodrigues(w,R);
             //R = R.t();
-            
+
             poseDrawer(frame,data[2],R,t * opts.square_size);
 
         }

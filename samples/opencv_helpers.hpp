@@ -79,12 +79,13 @@ inline bool readKfromCalib(cv::Mat& K, cv::Mat& distortion, cv::Size & img_size,
   img_size = _size;
 
   cameramat.convertTo(K,CV_32F);
-  distortion = cameradistortion;
+  cameradistortion.convertTo(distortion,CV_32F);
+  //distortion = cameradistortion;
   return true;
 }
 
-inline void poseDrawer(cv::Mat& drawImage, const cv::Mat& K, 
-                       const cv::Mat& w, const cv::Mat& t, 
+inline void poseDrawer(cv::Mat& drawImage, const cv::Mat& K,
+                       const cv::Mat& w, const cv::Mat& t,
                        const std::string scaleText = std::string(""), int lineThickness=4)
 {
   using namespace cv;
@@ -99,7 +100,7 @@ inline void poseDrawer(cv::Mat& drawImage, const cv::Mat& K,
   Mat D = Mat::zeros(4,1,CV_32F);
   projectPoints(Mat(op), w, t, K, D, ip);
   double axes_sz = drawImage.rows / 4.0;
-  double zmin    = 5e-2; 
+  double zmin    = 5e-2;
 //  ip[1] = ip[0] + (ip[1]- ip[0] ) * ( axes_sz / norm( ip[1] - ip[0] ) );
 //  ip[2] = ip[0] + (-ip[2]+ip[0] ) * ( axes_sz / norm( ip[2] - ip[0] ) );
 //  ip[3] = ip[0] + (-ip[3]+ip[0] ) * ( (1.0/sqrt(2))*axes_sz / ( zmin + norm( ip[3] - ip[0] ) ) );
@@ -107,7 +108,7 @@ inline void poseDrawer(cv::Mat& drawImage, const cv::Mat& K,
   ip[2] = ip[0] + (ip[2]-ip[0] ) * ( axes_sz / norm( ip[2] - ip[0] ) );
   ip[3] = ip[0] + (ip[3]-ip[0] ) * ( (1.0/sqrt(2))*axes_sz / ( zmin + norm( ip[3] - ip[0] ) ) );
 
-  // DRAW AXES LINES  
+  // DRAW AXES LINES
   vector<Scalar> c(4); //colors
   c[0] = Scalar(255, 255, 255);
   c[1] = Scalar(205, 50, 50);//x
@@ -116,17 +117,17 @@ inline void poseDrawer(cv::Mat& drawImage, const cv::Mat& K,
   line(drawImage, ip[0], ip[1], c[1],lineThickness,CV_AA);
   line(drawImage, ip[0], ip[2], c[2],lineThickness,CV_AA);
   line(drawImage, ip[0], ip[3], c[3],lineThickness,CV_AA);
- 
-  if( scaleText.size() > 1 ) 
+
+  if( scaleText.size() > 1 )
   { // print some text on the image if desired
     int baseline = 0;
     Size sz = getTextSize(scaleText, CV_FONT_HERSHEY_SIMPLEX, 1, 1, &baseline);
-    rectangle(drawImage, Point(10, 30 + 5), 
+    rectangle(drawImage, Point(10, 30 + 5),
               Point(10, 30) + Point(sz.width, -sz.height - 5), Scalar::all(0), -1);
     putText(drawImage, scaleText, Point(10, 30), CV_FONT_HERSHEY_SIMPLEX, 1.0, c[0], 1, CV_AA, false);
   }
-  
-  // DRAW LETTERS FOR AXES 
+
+  // DRAW LETTERS FOR AXES
   c[1] += Scalar(50,50,50);
   c[2] += Scalar(50,50,50);
   c[3] += Scalar(50,50,50);
